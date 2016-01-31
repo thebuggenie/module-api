@@ -1,0 +1,25 @@
+{
+  "name": "thebuggenie/module-api",
+  "description": "The API module for The Bug Genie, used for external integration with The Bug Genie",
+  "authors": [
+    {
+      "name": "Daniel Andre Eikeland",
+      "email": "zegenie@gmail.com"
+    },
+    {
+      "name": "Oliver Kahrmann",
+      "email": "oliver.kahrmann@gmail.com"
+    }
+  ],
+  "support": {
+    "email": "support@thebuggenie.com",
+    "forum": "http://forum.thebuggenie.org",
+    "issues": "http://issues.thebuggenie.com/module-api",
+    "irc": "irc://irc.freenode.org/thebuggenie"
+  },
+  "license": [
+    "MPL 2.0"
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
