@@ -61,6 +61,11 @@ class Main extends framework\Action
     {
         try
         {
+            // Default to JSON if nothing is specified.
+            $newFormat = $request->getParameter('format', 'json');
+            $this->getResponse()->setTemplate(mb_strtolower($action) . '.' . $newFormat . '.php');
+            $this->getResponse()->setupResponseContentType($newFormat);
+            
             if ($project_key = $request['project_key'])
                 $this->selected_project = entities\Project::getByKey($project_key);
             elseif ($project_id = (int) $request['project_id'])
@@ -71,10 +76,17 @@ class Main extends framework\Action
         }
         catch (\Exception $e)
         {
-
+            $this->getResponse()->setHttpStatus(500);
+            return $this->renderJSON(array('error' => 'An exception occurred: ' . $e));
         }
     }
 
+    /**
+     * Authenticate an application using a one-time application password.
+     * Creates a token to be used for subsequent requests.
+     * 
+     * @param framework\Request $request
+     */
     public function runAuthenticate(framework\Request $request)
     {
         $username = trim($request['username']);
