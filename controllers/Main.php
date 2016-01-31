@@ -1,13 +1,13 @@
 <?php
 
-namespace thebuggenie\core\modules\remote\controllers;
+namespace thebuggenie\modules\api\controllers;
 
 use thebuggenie\core\framework,
     thebuggenie\core\entities,
     thebuggenie\core\entities\tables;
 
 /**
- * actions for the remote module
+ * actions for the api module
  */
 class Main extends framework\Action
 {
