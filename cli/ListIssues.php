@@ -1,9 +1,9 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
-     * CLI command class, remote -> list_issues
+     * CLI command class, api -> list_issues
      *
      * @author Daniel Andre Eikeland <zegenie@zegeniestudios.net>
      * @version 3.1
@@ -13,7 +13,7 @@
      */
 
     /**
-     * CLI command class, remote -> list_issues
+     * CLI command class, api -> list_issues
      *
      * @package thebuggenie
      * @subpackage core
@@ -25,9 +25,9 @@
         {
             $this->_command_name = 'list_issues';
             $this->_description = "Query a remote server for a list of available issues for a project";
-            $this->addRequiredArgument("project_key", "The project key for the project you wish to list issues for (see remote_list_project)");
+            $this->addRequiredArgument("project_key", "The project key for the project you wish to list issues for (see api_list_project)");
             $this->addOptionalArgument("state", "Filter show only [open/closed/all] issues");
-            $this->addOptionalArgument("issuetype", "Filter show only issues of type [<issue type>] (see remote_list_issuetypes)");
+            $this->addOptionalArgument("issuetype", "Filter show only issues of type [<issue type>] (see api_list_issuetypes)");
             $this->addOptionalArgument("assigned_to", "Filter show only issues assigned to [<username>/me/none/all]");
             $this->addOptionalArgument("detailed", 'Whether to show a detailed issue list or not [yes/no] (default <no>)');
             parent::_setup();
@@ -101,23 +101,23 @@
                 $this->cliEcho("issue number shown in front of the issue (do not include the \n");
                 $this->cliEcho("issue type), ex:\n");
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" remote:update_issue projectname ");
+                $this->cliEcho(" api:update_issue projectname ");
                 $this->cliEcho("300\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" remote:show_issue projectname ");
+                $this->cliEcho(" api:show_issue projectname ");
                 $this->cliEcho("300\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" remote:list_transitions projectname ");
+                $this->cliEcho(" api:list_transitions projectname ");
                 $this->cliEcho("300\n", 'white', 'bold');
                 $this->cliEcho("\nor\n");
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" remote:update_issue projectname ");
+                $this->cliEcho(" api:update_issue projectname ");
                 $this->cliEcho("PREFIX-12\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" remote:show_issue projectname ");
+                $this->cliEcho(" api:show_issue projectname ");
                 $this->cliEcho("PREFIX-12\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" remote:list_transitions projectname ");
+                $this->cliEcho(" api:list_transitions projectname ");
                 $this->cliEcho("PREFIX-12\n", 'white', 'bold');
                 $this->cliEcho("\n");
                 $this->cliEcho("\n");
