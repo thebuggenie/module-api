@@ -1,9 +1,9 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
-     * CLI command class, remote -> list_fieldvalues
+     * CLI command class, api -> list_fieldvalues
      *
      * @author Daniel Andre Eikeland <zegenie@zegeniestudios.net>
      * @version 3.1
@@ -13,7 +13,7 @@
      */
 
     /**
-     * CLI command class, remote -> list_fieldvalues
+     * CLI command class, api -> list_fieldvalues
      *
      * @package thebuggenie
      * @subpackage core
@@ -43,7 +43,7 @@
             {
                 $options['project_key'] = $this->getProvidedArgument('project_key');
             }
-            $response = $this->getRemoteResponse($this->getRemoteURL('remote_list_fieldvalues', $options));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_fieldvalues', $options));
 
             if (!empty($response))
             {
@@ -95,13 +95,13 @@
                 }
                 $this->cliEcho("\n");
                 $this->cliEcho("When using ");
-                $this->cliEcho('remote:update_issue', 'green');
+                $this->cliEcho('api:update_issue', 'green');
                 $this->cliEcho(" to update an issue, pass any combination of a\n");
                 $this->cliEcho("field key and a valid value as a parameter to update the issue details.\n");
                 $this->cliEcho("The value is case-insensitive, and may also be written without spaces.\n");
                 $this->cliEcho("\n");
                 $this->cliEcho("For more information, check the documentation for ");
-                $this->cliEcho('remote:update_issue', 'green');
+                $this->cliEcho('api:update_issue', 'green');
                 $this->cliEcho(".\n");
 
             }

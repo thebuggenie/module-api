@@ -1,9 +1,9 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
-     * CLI command class, remote -> update_issue
+     * CLI command class, api -> update_issue
      *
      * @author Daniel Andre Eikeland <zegenie@zegeniestudios.net>
      * @version 3.1
@@ -13,7 +13,7 @@
      */
 
     /**
-     * CLI command class, remote -> update_issue
+     * CLI command class, api -> update_issue
      *
      * @package thebuggenie
      * @subpackage core

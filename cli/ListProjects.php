@@ -1,9 +1,9 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
-     * CLI command class, remote -> list_projects
+     * CLI command class, api -> list_projects
      *
      * @author Daniel Andre Eikeland <zegenie@zegeniestudios.net>
      * @version 3.1
@@ -13,7 +13,7 @@
      */
 
     /**
-     * CLI command class, remote -> list_projects
+     * CLI command class, api -> list_projects
      *
      * @package thebuggenie
      * @subpackage core
