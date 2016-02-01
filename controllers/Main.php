@@ -271,4 +271,26 @@ class Main extends framework\Action
         $this->field_info = $return_array;
     }
 
+    public function runIssueEditTimeSpent(framework\Request $request)
+    {
+        try
+        {
+            \thebuggenie\core\framework\Context::performAction(
+                new \thebuggenie\core\modules\main\controllers\Main(),
+                'main',
+                'IssueEditTimeSpent'
+            );
+        }
+        catch (\Exception $e)
+        {
+            ob_get_clean();
+
+            return $this->renderJSON(array('edited' => 'error', 'error' => $e->getMessage()));
+        }
+
+        ob_get_clean();
+
+        $this->return_data = array('edited' => 'ok');
+    }
+
 }
