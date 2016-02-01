@@ -220,7 +220,7 @@ class Main extends framework\Action
                     $choices = $classname::getAll();
                     foreach ($choices as $choice_key => $choice)
                     {
-                        $return_array['choices'][] = array('key' => $choice_key, 'name' => $choice->getName());
+                        $return_array['choices'][] = $choice->toJSON(true);
                     }
                     break;
                 case 'activitytype':
@@ -231,13 +231,13 @@ class Main extends framework\Action
                     $choices = $classname::getAll();
                     foreach ($choices as $choice_key => $choice)
                     {
-                        $return_array['choices'][] = array('key' => $choice_key, 'name' => $choice->getName());
+                        $return_array['choices'][] = $choice->toJSON(true);
                     }
                     break;
                 case 'percent_complete':
                     $return_array['description'] = framework\Context::getI18n()->__('Value of percentage completed');
                     $return_array['type'] = 'choice';
-                    $return_array['choices'][] = "1-100%";
+                    $return_array['choices'][] = "1-100%"; //TODO: That does not seem useful...
                     break;
                 case 'owner':
                 case 'assignee':
@@ -257,7 +257,7 @@ class Main extends framework\Action
                         $milestones = $this->selected_project->getAvailableMilestones();
                         foreach ($milestones as $milestone)
                         {
-                            $return_array['choices'][] = array('key' => $milestone->getID(), 'name' => $milestone->getName());
+                            $return_array['choices'][] = $milestone->toJSON(false);// array('key' => $milestone->getID(), 'name' => $milestone->getName());
                         }
                     }
                     break;
