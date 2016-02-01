@@ -213,20 +213,61 @@ class Main extends framework\Action
     {
         try
         {
-            \thebuggenie\core\framework\Context::performAction(
-                new \thebuggenie\core\modules\main\controllers\Main(),
-                'main',
-                'IssueEditTimeSpent'
-            );
+            $entry_id = $request['entry_id'];
+            $spenttime = ($entry_id) ? tables\IssueSpentTimes::getTable()->selectById($entry_id) : new entities\IssueSpentTime();
+
+            if ($issue_id = $request['issue_id'])
+            {
+                $issue = entities\Issue::getB2DBTable()->selectById($issue_id);
+            }
+            else
+            {
+                throw new \Exception('no issue');
+            }
+
+            if (!$spenttime->getID())
+            {
+                if ($request['timespent_manual'])
+                {
+                    $times = entities\Issue::convertFancyStringToTime($request['timespent_manual'], $issue);
+                }
+                else
+                {
+                    $times = \thebuggenie\core\entities\common\Timeable::getZeroedUnitsWithPoints();
+                    $times[$request['timespent_specified_type']] = $request['timespent_specified_value'];
+                }
+                $spenttime->setIssue($issue);
+                $spenttime->setUser($this->getUser());
+            }
+            else
+            {
+                $times = array('points' => $request['points'],
+                    'minutes' => $request['minutes'],
+                    'hours' => $request['hours'],
+                    'days' => $request['days'],
+                    'weeks' => $request['weeks'],
+                    'months' => $request['months']);
+                $edited_at = $request['edited_at'];
+                $spenttime->setEditedAt(mktime(0, 0, 1, $edited_at['month'], $edited_at['day'], $edited_at['year']));
+            }
+            $times['hours'] *= 100;
+            $spenttime->setSpentPoints($times['points']);
+            $spenttime->setSpentMinutes($times['minutes']);
+            $spenttime->setSpentHours($times['hours']);
+            $spenttime->setSpentDays($times['days']);
+            $spenttime->setSpentWeeks($times['weeks']);
+            $spenttime->setSpentMonths($times['months']);
+            $spenttime->setActivityType($request['timespent_activitytype']);
+            $spenttime->setComment($request['timespent_comment']);
+            $spenttime->save();
+
+            $spenttime->getIssue()->saveSpentTime();
         }
         catch (\Exception $e)
         {
-            ob_get_clean();
-
+            $this->getResponse()->setHttpStatus(400);
             return $this->renderJSON(array('edited' => 'error', 'error' => $e->getMessage()));
         }
-
-        ob_get_clean();
 
         $this->return_data = array('edited' => 'ok');
     }
