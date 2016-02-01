@@ -1,9 +1,9 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
-     * CLI command class, remote -> list_issuetypes
+     * CLI command class, api -> list_issuetypes
      *
      * @author Daniel Andre Eikeland <zegenie@zegeniestudios.net>
      * @version 3.1
@@ -13,7 +13,7 @@
      */
 
     /**
-     * CLI command class, remote -> list_issuetypes
+     * CLI command class, api -> list_issuetypes
      *
      * @package thebuggenie
      * @subpackage core
@@ -34,7 +34,7 @@
             $this->cliEcho($this->_getCurrentRemoteServer(), 'white', 'bold');
             $this->cliEcho(" for list of issuetypes ...\n\n");
 
-            $response = $this->getRemoteResponse($this->getRemoteURL('remote_list_issuetypes', array('format' => 'json')));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_issuetypes', array('format' => 'json')));
 
             if (!empty($response))
             {

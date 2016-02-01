@@ -1,9 +1,9 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
-     * CLI command class, remote -> list_issuefields
+     * CLI command class, api -> list_issuefields
      *
      * @author Daniel Andre Eikeland <zegenie@zegeniestudios.net>
      * @version 3.1
@@ -13,7 +13,7 @@
      */
 
     /**
-     * CLI command class, remote -> list_issuefields
+     * CLI command class, api -> list_issuefields
      *
      * @package thebuggenie
      * @subpackage core
@@ -39,7 +39,7 @@
             $this->cliEcho($this->_getCurrentRemoteServer(), 'white', 'bold');
             $this->cliEcho(" for issuefields valid for issue types {$issuetype} for project {$project_key}\n\n");
 
-            $response = $this->getRemoteResponse($this->getRemoteURL('remote_list_issuefields', array('issuetype' => $issuetype, 'project_key' => $project_key, 'format' => 'json')));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_issuefields', array('issuetype' => $issuetype, 'project_key' => $project_key, 'format' => 'json')));
 
             if (!empty($response))
             {
@@ -51,12 +51,12 @@
                 }
                 $this->cliEcho("\n");
                 $this->cliEcho("When using ");
-                $this->cliEcho('remote:update_issue', 'green');
+                $this->cliEcho('api:update_issue', 'green');
                 $this->cliEcho(" to update an issue, pass any of these issue fields\n");
                 $this->cliEcho("as a valid parameter to update the issue details.\n");
                 $this->cliEcho("\n");
                 $this->cliEcho("Check the documentation for ");
-                $this->cliEcho('remote:update_issue', 'green');
+                $this->cliEcho('api:update_issue', 'green');
                 $this->cliEcho(" for more information.\n");
 
             }

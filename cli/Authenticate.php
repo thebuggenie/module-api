@@ -1,6 +1,6 @@
 <?php
 
-    namespace thebuggenie\core\modules\remote\cli;
+    namespace thebuggenie\modules\api\cli;
 
     /**
      * CLI command class, main -> set_remote
