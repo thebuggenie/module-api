@@ -1,34 +1,41 @@
 api_authenticate:
     route: /api/authenticate/:username
-    module: remote
+    module: api
     action: authenticate
     parameters: [ ]
     csrf_enabled: false
 
 api_list_projects:
     route: /api/:api_username/projects/:format
-    module: remote
+    module: api
     action: listProjects
     parameters: [ ]
     csrf_enabled: false
 
 api_list_issuetypes:
     route: /api/:api_username/issuetypes/:format
-    module: remote
+    module: api
     action: listIssuetypes
     parameters: [ ]
     csrf_enabled: false
 
 api_list_issuefields:
     route: /api/:api_username/list/issuefields/for/:project_key/type/:issuetype/:format
-    module: remote
+    module: api
     action: listIssuefields
     parameters: [ ]
     csrf_enabled: false
 
 api_list_fieldvalues:
     route: '/api/:api_username/list/fieldvalues/for/field/:field_key/:format/*'
-    module: remote
+    module: api
     action: listFieldvalues
+    parameters: [ ]
+    csrf_enabled: false
+
+api_issue_edittimespent:
+    route: /api/:api_username/:project_key/issues/:issue_id/timespent/:entry_id/:format
+    module: api
+    action: issueEditTimeSpent
     parameters: [ ]
     csrf_enabled: false
