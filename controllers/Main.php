@@ -147,7 +147,7 @@ class Main extends framework\Action
         foreach ($projects as $project)
         {
             if ($project->isDeleted()) continue;
-            $return_array[] = $project->toJSON();
+            $return_array[] = $project->toJSON(false);
         }
 
         $this->projects = $return_array;
