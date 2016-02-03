@@ -226,7 +226,7 @@ class Main extends framework\Action
             }
 
             framework\Context::loadLibrary('common');
-            $spenttime->editOrAdd($issue, $this->getUser(), array_only_with_default($request->getParameters(), array_merge(array('timespent_manual', 'timespent_specified_type', 'timespent_specified_value', 'timespent_activitytype', 'timespent_comment'), \thebuggenie\core\entities\common\Timeable::$units)));
+            $spenttime->editOrAdd($issue, $this->getUser(), array_only_with_default($request->getParameters(), array_merge(array('timespent_manual', 'timespent_specified_type', 'timespent_specified_value', 'timespent_activitytype', 'timespent_comment'), \thebuggenie\core\entities\common\Timeable::getUnitsWithPoints())));
         }
         catch (\Exception $e)
         {
