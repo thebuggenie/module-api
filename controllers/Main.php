@@ -16,6 +16,14 @@ class Main extends framework\Action
 	protected static $_ver_api_mn = 0;
 	protected static $_ver_api_rev = 0;
 
+	/**
+	 * Decides whether to render details in single-entity endpoints.
+	 * (Set to false if the parameter "nodetail" is present in the request)
+	 * 
+	 * @var boolean $render_detail
+	 */
+	protected $render_detail = true;
+	
 	public function getApiVersion($with_revision = true)
 	{
 		$retvar = self::$_ver_api_mj . '.' . self::$_ver_api_mn;
@@ -73,6 +81,8 @@ class Main extends framework\Action
 
             if ($this->selected_project instanceof entities\Project)
                 framework\Context::setCurrentProject($this->selected_project);
+            
+            $this->render_detail = !isset($request['nodetail']);
         }
         catch (\Exception $e)
         {
@@ -136,7 +146,7 @@ class Main extends framework\Action
     }
     
     public function runMe(framework\Request $request) {
-        $this->users = array(framework\Context::getUser()->toJSON(true));
+        $this->users = array(framework\Context::getUser()->toJSON($this->render_detail));
     }
 
     public function runListProjects(framework\Request $request)
@@ -151,6 +161,16 @@ class Main extends framework\Action
         }
 
         $this->projects = $return_array;
+    }
+    
+    public function runProject(framework\Request $request) {
+        // Project is already selected in preExecute, so we just display it
+        if($this->selected_project instanceof entities\Project) {
+            $this->projects = array($this->selected_project->toJSON($this->render_detail));
+        } else {
+            $this->getResponse()->setHttpStatus(404);
+            return $this->renderJSON(array('error' => 'Project not found'));
+        }
     }
 
     public function runListIssuefields(framework\Request $request)

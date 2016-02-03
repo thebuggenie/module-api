@@ -26,6 +26,13 @@ api_list_projects:
     parameters: [ ]
     csrf_enabled: false
 
+api_project:
+    route: /api/:api_username/projects/:project_key
+    module: api
+    action: project
+    parameters: [ ]
+    csrf_enabled: false
+
 api_list_issuetypes:
     route: /api/:api_username/issuetypes
     module: api
