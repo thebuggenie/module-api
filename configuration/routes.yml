@@ -5,36 +5,57 @@ api_authenticate:
     parameters: [ ]
     csrf_enabled: false
 
+api_status:
+    route: /api/:api_username/status
+    module: api
+    action: status
+    parameters: [ ]
+    csrf_enabled: false
+
+api_me:
+    route: /api/:api_username/me
+    module: api
+    action: me
+    parameters: [ ]
+    csrf_enabled: false
+
 api_list_projects:
-    route: /api/:api_username/projects/:format
+    route: /api/:api_username/projects
     module: api
     action: listProjects
     parameters: [ ]
     csrf_enabled: false
 
+api_project:
+    route: /api/:api_username/projects/:project_key
+    module: api
+    action: project
+    parameters: [ ]
+    csrf_enabled: false
+
 api_list_issuetypes:
-    route: /api/:api_username/issuetypes/:format
+    route: /api/:api_username/issuetypes
     module: api
     action: listIssuetypes
     parameters: [ ]
     csrf_enabled: false
 
 api_list_issuefields:
-    route: /api/:api_username/list/issuefields/for/:project_key/type/:issuetype/:format
+    route: /api/:api_username/list/issuefields/for/:project_key/type/:issuetype
     module: api
     action: listIssuefields
     parameters: [ ]
     csrf_enabled: false
 
 api_list_fieldvalues:
-    route: '/api/:api_username/list/fieldvalues/for/field/:field_key/:format/*'
+    route: '/api/:api_username/list/fieldvalues/for/field/:field_key/*'
     module: api
     action: listFieldvalues
     parameters: [ ]
     csrf_enabled: false
 
 api_issue_edittimespent:
-    route: /api/:api_username/:project_key/issues/:issue_id/timespent/:entry_id/:format
+    route: /api/:api_username/:project_key/issues/:issue_id/timespent/:entry_id
     module: api
     action: issueEditTimeSpent
     parameters: [ ]
