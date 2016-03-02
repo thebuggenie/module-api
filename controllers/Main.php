@@ -12,6 +12,40 @@ use thebuggenie\core\framework,
 class Main extends framework\Action
 {
 
+	protected static $_ver_api_mj = 1;
+	protected static $_ver_api_mn = 0;
+	protected static $_ver_api_rev = 0;
+
+	/**
+	 * Decides whether to render details in single-entity endpoints.
+	 * (Set to false if the parameter "nodetail" is present in the request)
+	 * 
+	 * @var boolean $render_detail
+	 */
+	protected $render_detail = true;
+	
+	public function getApiVersion($with_revision = true)
+	{
+		$retvar = self::$_ver_api_mj . '.' . self::$_ver_api_mn;
+		if ($with_revision) $retvar .= (is_numeric(self::$_ver_api_rev)) ? '.' . self::$_ver_api_rev : self::$_ver_api_rev;
+		return $retvar;
+	}
+	
+	public function getApiMajorVer()
+	{
+		return self::$_ver_api_mj;
+	}
+	
+	public function getApiMinorVer()
+	{
+		return self::$_ver_api_mn;
+	}
+	
+	public function getApiRevision()
+	{
+		return self::$_ver_api_rev;
+	}
+	
     public function getAuthenticationMethodForAction($action)
     {
         switch ($action)
@@ -35,6 +69,11 @@ class Main extends framework\Action
     {
         try
         {
+            // Default to JSON if nothing is specified.
+            $newFormat = $request->getParameter('format', 'json');
+            $this->getResponse()->setTemplate(mb_strtolower($action) . '.' . $newFormat . '.php');
+            $this->getResponse()->setupResponseContentType($newFormat);
+            
             if ($project_key = $request['project_key'])
                 $this->selected_project = entities\Project::getByKey($project_key);
             elseif ($project_id = (int) $request['project_id'])
@@ -42,13 +81,22 @@ class Main extends framework\Action
 
             if ($this->selected_project instanceof entities\Project)
                 framework\Context::setCurrentProject($this->selected_project);
+            
+            $this->render_detail = !isset($request['nodetail']);
         }
         catch (\Exception $e)
         {
-
+            $this->getResponse()->setHttpStatus(500);
+            return $this->renderJSON(array('error' => 'An exception occurred: ' . $e));
         }
     }
 
+    /**
+     * Authenticate an application using a one-time application password.
+     * Creates a token to be used for subsequent requests.
+     * 
+     * @param framework\Request $request
+     */
     public function runAuthenticate(framework\Request $request)
     {
         $username = trim($request['username']);
@@ -77,6 +125,30 @@ class Main extends framework\Action
         return $this->renderJSON(array('error' => 'Incorrect username or application password'));
     }
 
+    public function runStatus(framework\Request $request)
+    {
+        $status_info = array(
+            'api_version' => $this->getApiVersion(),
+            'tgb_version' => framework\Settings::getVersion(),
+            'tgb_version_long' => framework\Settings::getVersion(true, true),
+            'tbg_name' => framework\Settings::getSiteHeaderName(),
+            'tbg_url_host' => framework\Settings::getURLhost(),
+            'tbg_url' => (framework\Settings::getHeaderLink() == '') ? framework\Context::getWebroot() : framework\Settings::getHeaderLink(),
+            'tbg_logo_url' => framework\Settings::getHeaderIconURL(),
+            'tbg_icon_url' => framework\Settings::getFaviconURL(),
+            'online' => (! (bool)framework\Settings::isMaintenanceModeEnabled() )
+            );
+        if(framework\Settings::hasMaintenanceMessage()) {
+            $status_info['maintenance_msg'] = framework\Settings::getMaintenanceMessage();
+        }
+
+        $this->status_info = $status_info;
+    }
+    
+    public function runMe(framework\Request $request) {
+        $this->users = array(framework\Context::getUser()->toJSON($this->render_detail));
+    }
+
     public function runListProjects(framework\Request $request)
     {
         $projects = framework\Context::getUser()->getAssociatedProjects();
@@ -85,10 +157,20 @@ class Main extends framework\Action
         foreach ($projects as $project)
         {
             if ($project->isDeleted()) continue;
-            $return_array[$project->getKey()] = $project->getName();
+            $return_array[] = $project->toJSON(false);
         }
 
         $this->projects = $return_array;
+    }
+    
+    public function runProject(framework\Request $request) {
+        // Project is already selected in preExecute, so we just display it
+        if($this->selected_project instanceof entities\Project) {
+            $this->projects = array($this->selected_project->toJSON($this->render_detail));
+        } else {
+            $this->getResponse()->setHttpStatus(404);
+            return $this->renderJSON(array('error' => 'Project not found'));
+        }
     }
 
     public function runListIssuefields(framework\Request $request)
@@ -122,7 +204,7 @@ class Main extends framework\Action
         $return_array = array();
         foreach ($issuetypes as $issuetype)
         {
-            $return_array[] = $issuetype->getName();
+            $return_array[] = $issuetype->toJSON(true);
         }
 
         $this->issuetypes = $return_array;
@@ -158,7 +240,7 @@ class Main extends framework\Action
                     $choices = $classname::getAll();
                     foreach ($choices as $choice_key => $choice)
                     {
-                        $return_array['choices'][$choice_key] = $choice->getName();
+                        $return_array['choices'][] = $choice->toJSON(true);
                     }
                     break;
                 case 'activitytype':
@@ -169,13 +251,13 @@ class Main extends framework\Action
                     $choices = $classname::getAll();
                     foreach ($choices as $choice_key => $choice)
                     {
-                        $return_array['choices'][$choice_key] = $choice->getName();
+                        $return_array['choices'][] = $choice->toJSON(true);
                     }
                     break;
                 case 'percent_complete':
                     $return_array['description'] = framework\Context::getI18n()->__('Value of percentage completed');
                     $return_array['type'] = 'choice';
-                    $return_array['choices'][] = "1-100%";
+                    $return_array['choices'][] = "1-100%"; //TODO: That does not seem useful...
                     break;
                 case 'owner':
                 case 'assignee':
@@ -195,7 +277,7 @@ class Main extends framework\Action
                         $milestones = $this->selected_project->getAvailableMilestones();
                         foreach ($milestones as $milestone)
                         {
-                            $return_array['choices'][$milestone->getID()] = $milestone->getName();
+                            $return_array['choices'][] = $milestone->toJSON(false);// array('key' => $milestone->getID(), 'name' => $milestone->getName());
                         }
                     }
                     break;
