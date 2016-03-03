@@ -13,7 +13,7 @@ class Main extends framework\Action
 {
 
 	protected static $_ver_api_mj = 1;
-	protected static $_ver_api_mn = 0;
+	protected static $_ver_api_mn = 1;
 	protected static $_ver_api_rev = 0;
 
 	/**
@@ -173,30 +173,6 @@ class Main extends framework\Action
         }
     }
 
-    public function runListIssuefields(framework\Request $request)
-    {
-        try
-        {
-            $issuetype = entities\Issuetype::getByKeyish($request['issuetype']);
-
-            if ($issuetype instanceof entities\common\Identifiable)
-            {
-                $issuefields = $this->selected_project->getVisibleFieldsArray($issuetype->getID());
-            }
-            else
-            {
-                $issuefields = array();
-            }
-        }
-        catch (\Exception $e)
-        {
-            $this->getResponse()->setHttpStatus(400);
-            return $this->renderJSON(array('error' => 'An exception occurred: ' . $e));
-        }
-
-        $this->issuefields = array_keys($issuefields);
-    }
-
     public function runListIssuetypes(framework\Request $request)
     {
         $issuetypes = entities\Issuetype::getAll();
@@ -289,34 +265,6 @@ class Main extends framework\Action
         }
 
         $this->field_info = $return_array;
-    }
-
-    public function runIssueEditTimeSpent(framework\Request $request)
-    {
-        try
-        {
-            $entry_id = $request['entry_id'];
-            $spenttime = ($entry_id) ? tables\IssueSpentTimes::getTable()->selectById($entry_id) : new entities\IssueSpentTime();
-
-            if ($issue_id = $request['issue_id'])
-            {
-                $issue = entities\Issue::getB2DBTable()->selectById($issue_id);
-            }
-            else
-            {
-                throw new \Exception('no issue');
-            }
-
-            framework\Context::loadLibrary('common');
-            $spenttime->editOrAdd($issue, $this->getUser(), array_only_with_default($request->getParameters(), array_merge(array('timespent_manual', 'timespent_specified_type', 'timespent_specified_value', 'timespent_activitytype', 'timespent_comment', 'edited_at'), \thebuggenie\core\entities\common\Timeable::getUnitsWithPoints())));
-        }
-        catch (\Exception $e)
-        {
-            $this->getResponse()->setHttpStatus(400);
-            return $this->renderJSON(array('edited' => 'error', 'error' => $e->getMessage()));
-        }
-
-        $this->return_data = array('edited' => 'ok');
     }
 
 }

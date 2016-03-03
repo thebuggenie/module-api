@@ -57,9 +57,20 @@
                         $this->cliEcho("Available values:\n", 'white', 'bold');
                         if (count($response->choices))
                         {
+                            $this->cliEcho("value_key", 'yellow', 'bold');
+                            $this->cliEcho(" - value name\n", 'white', 'bold');
+
                             foreach ($response->choices as $value)
                             {
-                                $this->cliEcho("  {$value}\n", 'yellow');
+                                if (is_object($value))
+                                {
+                                    $this->cliEcho($value->key, 'yellow');
+                                    $this->cliEcho(" - $value->name\n");
+                                }
+                                else if (is_string($value))
+                                {
+                                    $this->cliEcho("  {$value}\n", 'yellow');
+                                }
                             }
                         }
                         else

@@ -59,7 +59,7 @@
             }
 
             $url_options = array('project_key' => $this->project_key, 'issue_no' => $this->issue_number, 'format' => 'json');
-            $response = $this->getRemoteResponse($this->getRemoteURL('project_list_workflowtransitions', $url_options));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_workflowtransitions', $url_options));
             $this->cliEcho("\n");
 
             if (!$transition)
