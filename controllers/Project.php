@@ -13,6 +13,32 @@ use thebuggenie\core\framework,
 class Project extends helpers\ProjectActions
 {
 
+    /**
+     * The currently selected project in actions where there is one
+     *
+     * @access protected
+     * @property entities\Project $selected_project
+     */
+    public function preExecute(framework\Request $request, $action)
+    {
+        parent::preExecute($request, $action);
+
+        try
+        {
+            // Default to JSON if nothing is specified.
+            $newFormat = $request->getParameter('format', 'json');
+            $this->getResponse()->setTemplate(mb_strtolower($action) . '.' . $newFormat . '.php');
+            $this->getResponse()->setupResponseContentType($newFormat);
+
+            $this->render_detail = !isset($request['nodetail']);
+        }
+        catch (\Exception $e)
+        {
+            $this->getResponse()->setHttpStatus(500);
+            return $this->renderJSON(array('error' => 'An exception occurred: ' . $e));
+        }
+    }
+
     public function runListIssuefields(framework\Request $request)
     {
         try
