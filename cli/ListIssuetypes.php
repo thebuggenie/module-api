@@ -40,8 +40,15 @@
             {
                 $this->cliEcho("issuetype_key", 'yellow', 'bold');
                 $this->cliEcho(" - Description\n", 'white', 'bold');
-                foreach ($response as $key => $issuetype)
+                $issuetypes = isset($response->issuetypes) ? $response->issuetypes : $response;
+                foreach ($issuetypes as $key => $issuetype)
                 {
+                    if (is_object($issuetype))
+                    {
+                        $key = $issuetype->key;
+                        $issuetype = $issuetype->name;
+                    }
+
                     $this->cliEcho("$key", 'yellow');
                     $this->cliEcho(" - $issuetype\n");
                 }

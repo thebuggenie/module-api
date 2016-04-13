@@ -41,22 +41,50 @@ api_list_issuetypes:
     csrf_enabled: false
 
 api_list_issuefields:
-    route: /api/:api_username/list/issuefields/for/:project_key/type/:issuetype
+    route: /api/:api_username/list/issuefields/for/:project_key/type/:issuetype/:format
     module: api
-    action: listIssuefields
+    action: Project::listIssuefields
     parameters: [ ]
     csrf_enabled: false
 
 api_list_fieldvalues:
-    route: '/api/:api_username/list/fieldvalues/for/field/:field_key/*'
+    route: '/api/:api_username/list/fieldvalues/for/field/:field_key/:format/*'
     module: api
     action: listFieldvalues
     parameters: [ ]
     csrf_enabled: false
 
 api_issue_edittimespent:
-    route: /api/:api_username/:project_key/issues/:issue_id/timespent/:entry_id
+    route: /api/:api_username/:project_key/issues/:issue_id/timespent/:entry_id/:format
     module: api
-    action: issueEditTimeSpent
+    action: Project::issueEditTimeSpent
+    parameters: [ ]
+    csrf_enabled: false
+
+api_list_issues:
+    route: '/api/:api_username/issues/:project_key/:format/*'
+    module: api
+    action: Project::listIssues
+    parameters: [ ]
+    csrf_enabled: false
+
+api_list_workflowtransitions:
+    route: '/api/:api_username/workflowtransitions/:project_key/:issue_no/:format/*'
+    module: api
+    action: Project::listWorkflowTransitions
+    parameters: [ ]
+    csrf_enabled: false
+
+api_viewissue:
+    route: '/api/:api_username/issue/:project_key/:issue_no/*'
+    module: api
+    action: Project::viewIssue
+    parameters: [ ]
+    csrf_enabled: false
+
+api_update_issuedetails:
+    route: '/api/:api_username/update/issue/:issue_no/:format/*'
+    module: api
+    action: Project::updateIssueDetails
     parameters: [ ]
     csrf_enabled: false

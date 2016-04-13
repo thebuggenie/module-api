@@ -50,8 +50,8 @@
             $url_options = array('project_key' => $this->project_key, 'issue_no' => $this->issue_number, 'format' => 'json');
 
             $this->cliEcho("\n");
-            
-            $issue = $this->getRemoteResponse($this->getRemoteURL('viewissue', $url_options));
+
+            $issue = $this->getRemoteResponse($this->getRemoteURL('api_viewissue', $url_options));
 
             \thebuggenie\core\framework\Context::loadLibrary('common');
             $this->cliEcho($print_issue_number, 'green', 'bold');
@@ -64,7 +64,7 @@
             $this->cliEcho($state);
             $this->cliEcho("\n");
             $this->cliEcho("Posted: ", 'white', 'bold');
-            $this->cliEcho(tbg_formatTime($issue->created_at, 21) . ' (' . $issue->created_at . ')');
+            $this->cliEcho(tbg_formatTime($issue->created_at, 21, true, true) . ' (' . $issue->created_at . ')');
             $this->cliEcho("\n");
             $this->cliEcho("Posted by: ", 'white', 'bold');
 
@@ -75,7 +75,7 @@
 
             $this->cliEcho("\n");
             $this->cliEcho("Updated: ", 'white', 'bold');
-            $this->cliEcho(tbg_formatTime($issue->updated_at, 21) . ' (' . $issue->updated_at . ')');
+            $this->cliEcho(tbg_formatTime($issue->updated_at, 21, true, true) . ' (' . $issue->updated_at . ')');
             $this->cliEcho("\n");
             $this->cliEcho("Assigned to: ", 'white', 'bold');
 
@@ -98,7 +98,7 @@
             {
                 $name = ucfirst(str_replace('_', ' ', $field));                
                 $this->cliEcho("{$name}: ", 'white', 'bold');
-                if ($issue->$field)
+                if (isset($issue->$field))
                 {
                     if ($field == 'estimated_time' || $field == 'spent_time')
                     {
@@ -143,7 +143,7 @@
                         
                         $this->cliEcho("\n");
                         $this->cliEcho('Posted: ', 'white', 'bold');
-                        $this->cliEcho(tbg_formatTime($comment->created_at, 21) . ' (' . $comment->created_at . ')');
+                        $this->cliEcho(tbg_formatTime($comment->created_at, 21, true, true) . ' (' . $comment->created_at . ')');
                         $this->cliEcho("\n");
                         $this->cliEcho('Comment: ', 'white', 'bold');
                         $this->cliEcho($comment->content);

@@ -13,7 +13,7 @@ class Main extends framework\Action
 {
 
 	protected static $_ver_api_mj = 1;
-	protected static $_ver_api_mn = 0;
+	protected static $_ver_api_mn = 1;
 	protected static $_ver_api_rev = 0;
 
 	/**
@@ -173,30 +173,6 @@ class Main extends framework\Action
         }
     }
 
-    public function runListIssuefields(framework\Request $request)
-    {
-        try
-        {
-            $issuetype = entities\Issuetype::getByKeyish($request['issuetype']);
-
-            if ($issuetype instanceof entities\common\Identifiable)
-            {
-                $issuefields = $this->selected_project->getVisibleFieldsArray($issuetype->getID());
-            }
-            else
-            {
-                $issuefields = array();
-            }
-        }
-        catch (\Exception $e)
-        {
-            $this->getResponse()->setHttpStatus(400);
-            return $this->renderJSON(array('error' => 'An exception occurred: ' . $e));
-        }
-
-        $this->issuefields = array_keys($issuefields);
-    }
-
     public function runListIssuetypes(framework\Request $request)
     {
         $issuetypes = entities\Issuetype::getAll();
@@ -289,28 +265,6 @@ class Main extends framework\Action
         }
 
         $this->field_info = $return_array;
-    }
-
-    public function runIssueEditTimeSpent(framework\Request $request)
-    {
-        try
-        {
-            \thebuggenie\core\framework\Context::performAction(
-                new \thebuggenie\core\modules\main\controllers\Main(),
-                'main',
-                'IssueEditTimeSpent'
-            );
-        }
-        catch (\Exception $e)
-        {
-            ob_get_clean();
-
-            return $this->renderJSON(array('edited' => 'error', 'error' => $e->getMessage()));
-        }
-
-        ob_get_clean();
-
-        $this->return_data = array('edited' => 'ok');
     }
 
 }

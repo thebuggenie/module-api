@@ -98,7 +98,7 @@
 
             if (count($fields) || array_key_exists('workflow_transition', $url_options))
             {
-                $response = $this->getRemoteResponse($this->getRemoteURL('project_update_issuedetails', $url_options), $post_data);
+                $response = $this->getRemoteResponse($this->getRemoteURL('api_update_issuedetails', $url_options), $post_data);
 
                 if (!is_object($response))
                     throw new \Exception('Could not parse the return value from the server. Please re-check the command run.');

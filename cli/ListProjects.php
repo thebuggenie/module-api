@@ -40,8 +40,15 @@
             {
                 $this->cliEcho("project_key", 'green', 'bold');
                 $this->cliEcho(" - project name\n", 'white', 'bold');
-                foreach ($response as $project_key => $project_name)
+                $projects = isset($response->projects) ? $response->projects : $response;
+                foreach ($projects as $project_key => $project_name)
                 {
+                    if (is_object($project_name))
+                    {
+                        $project_key = $project_name->key;
+                        $project_name = $project_name->name;
+                    }
+
                     $this->cliEcho($project_key, 'green');
                     $this->cliEcho(" - $project_name\n");
                 }
