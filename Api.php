@@ -8,7 +8,7 @@
      * The Bug Genie API module
      *
      * @author
-     * @version 0.1
+     * @version 0.2
      * @license http://opensource.org/licenses/MPL-2.0 Mozilla Public License 2.0 (MPL 2.0)
      * @package thebuggenie/modules/api
      * @subpackage core
@@ -25,7 +25,7 @@
     class Api extends \thebuggenie\core\entities\Module
     {
 
-        const VERSION = '0.1';
+        const VERSION = '0.2';
 
         protected $_name = 'api';
         protected $_longname = 'External API module';
