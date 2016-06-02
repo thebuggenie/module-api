@@ -59,7 +59,7 @@
 
             $options['project_key'] = $this->getProvidedArgument('project_key');
 
-            $response = $this->getRemoteResponse($this->getRemoteURL('project_list_issues', $options));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_issues', $options));
 
             $this->cliEcho("\n");
             if (!empty($response) && $response->count > 0)
@@ -81,12 +81,12 @@
                     if ($this->getProvidedArgument('detailed', 'no') == 'yes')
                     {
                         $this->cliEcho("Posted: ", 'blue', 'bold');
-                        $this->cliEcho(tbg_formatTime($issue->created_at, 21));
+                        $this->cliEcho(tbg_formatTime($issue->created_at, 21, true, true));
                         $this->cliEcho(" by ");
                         $this->cliEcho($issue->posted_by, 'cyan');
                         $this->cliEcho("\n");
                         $this->cliEcho("Updated: ", 'blue', 'bold');
-                        $this->cliEcho(tbg_formatTime($issue->last_updated, 21));
+                        $this->cliEcho(tbg_formatTime($issue->last_updated, 21, true, true));
                         $this->cliEcho("\n");
                         $this->cliEcho("Assigned to: ", 'blue', 'bold');
                         $this->cliEcho($issue->assigned_to, 'yellow', 'bold');
