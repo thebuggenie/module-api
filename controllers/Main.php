@@ -133,9 +133,11 @@ class Main extends framework\Action
             'version_long' => framework\Settings::getVersion(true, true),
             'site_name' => framework\Settings::getSiteHeaderName(),
             'host' => framework\Settings::getURLhost(),
-            'site_url' => (framework\Settings::getHeaderLink() == '') ? framework\Context::getWebroot() : framework\Settings::getHeaderLink(),
-            'logo_url' => framework\Settings::getHeaderIconURL(),
-            'icon_url' => framework\Settings::getFaviconURL(),
+            'urls' => array(
+                'site' => (framework\Settings::getHeaderLink() == '') ? framework\Context::getWebroot() : framework\Settings::getHeaderLink(),
+                'logo' => framework\Settings::getHeaderIconURL(),
+                'icon' => framework\Settings::getFaviconURL()
+            ),
             'online' => (! (bool)framework\Settings::isMaintenanceModeEnabled() )
             );
         if(framework\Settings::hasMaintenanceMessage()) {
