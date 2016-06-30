@@ -137,13 +137,15 @@ class Main extends framework\Action
     {
         $status_info = array(
             'api_version' => $this->getApiVersion(),
-            'tgb_version' => framework\Settings::getVersion(),
-            'tgb_version_long' => framework\Settings::getVersion(true, true),
-            'tbg_name' => framework\Settings::getSiteHeaderName(),
-            'tbg_url_host' => framework\Settings::getURLhost(),
-            'tbg_url' => (framework\Settings::getHeaderLink() == '') ? framework\Context::getWebroot() : framework\Settings::getHeaderLink(),
-            'tbg_logo_url' => framework\Settings::getHeaderIconURL(),
-            'tbg_icon_url' => framework\Settings::getFaviconURL(),
+            'version' => framework\Settings::getVersion(),
+            'version_long' => framework\Settings::getVersion(true, true),
+            'site_name' => framework\Settings::getSiteHeaderName(),
+            'host' => framework\Settings::getURLhost(),
+            'urls' => array(
+                'site' => (framework\Settings::getHeaderLink() == '') ? framework\Context::getWebroot() : framework\Settings::getHeaderLink(),
+                'logo' => framework\Settings::getHeaderIconURL(),
+                'icon' => framework\Settings::getFaviconURL()
+            ),
             'online' => (! (bool)framework\Settings::isMaintenanceModeEnabled() )
             );
         if(framework\Settings::hasMaintenanceMessage()) {
