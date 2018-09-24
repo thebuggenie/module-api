@@ -18,14 +18,14 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class ShowIssue extends \thebuggenie\core\framework\cli\RemoteCommand
+    class ShowIssue extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'show_issue';
             $this->_description = "Show detailed information about an issue on a remote server";
-            $this->addRequiredArgument('project_key', 'The project key for the project you want to update an issue for');
+            $this->addRequiredArgument('project_id', 'The project id for the project containing the issue you want to see transitions for');
             $this->addRequiredArgument('issue_number', 'The issue number for the issue you want to update');
             $this->addOptionalArgument('include_comments', 'Whether to include comments in the issue details (yes/no)');
             $this->addOptionalArgument('include_system_comments', 'Whether to include comments in the issue details (yes/no default no)');
@@ -35,7 +35,7 @@
         public function do_execute()
         {
             $this->cliEcho('Showing detailed information about ');
-            $this->cliEcho($this->getProvidedArgument('project_key'), 'green');
+            $this->cliEcho($this->getProvidedArgument('project_id'), 'green');
             $this->cliEcho(' issue ');
             $print_issue_number = $this->getProvidedArgument('issue_number');
 
@@ -47,11 +47,11 @@
             $this->cliEcho($this->_getCurrentRemoteServer(), 'white', 'bold');
             $this->cliEcho("\n");
 
-            $url_options = array('project_key' => $this->project_key, 'issue_no' => $this->issue_number, 'format' => 'json');
+            $url_options = array('project_id' => $this->project_id, 'issue_no' => $this->issue_number);
 
             $this->cliEcho("\n");
             
-            $issue = $this->getRemoteResponse($this->getRemoteURL('viewissue', $url_options));
+            $issue = $this->getRemoteResponse($this->getRemoteURL('api_issue_get', $url_options));
 
             \thebuggenie\core\framework\Context::loadLibrary('common');
             $this->cliEcho($print_issue_number, 'green', 'bold');
@@ -62,9 +62,21 @@
             $this->cliEcho("\n");
             $this->cliEcho("State: ", 'white', 'bold');
             $this->cliEcho($state);
+            if ($issue->deleted) {
+                $this->cliEcho(" [DELETED]", 'red', 'bold');
+            }
             $this->cliEcho("\n");
+            $this->cliEcho("Status: ", 'white', 'bold');
+
+            if ($issue->status)
+                $this->cliEcho($issue->status->name);
+            else
+                $this->cliEcho('-');
+
+            $this->cliEcho("\n");
+
             $this->cliEcho("Posted: ", 'white', 'bold');
-            $this->cliEcho(tbg_formatTime($issue->created_at, 21) . ' (' . $issue->created_at . ')');
+            $this->cliEcho(tbg_formatTime($issue->created_at, 21, true) . ' (' . $issue->created_at . ')');
             $this->cliEcho("\n");
             $this->cliEcho("Posted by: ", 'white', 'bold');
 
@@ -75,7 +87,7 @@
 
             $this->cliEcho("\n");
             $this->cliEcho("Updated: ", 'white', 'bold');
-            $this->cliEcho(tbg_formatTime($issue->updated_at, 21) . ' (' . $issue->updated_at . ')');
+            $this->cliEcho(tbg_formatTime($issue->updated_at, 21, true) . ' (' . $issue->updated_at . ')');
             $this->cliEcho("\n");
             $this->cliEcho("Assigned to: ", 'white', 'bold');
 
@@ -85,20 +97,12 @@
                 $this->cliEcho('-');
 
             $this->cliEcho("\n");
-            $this->cliEcho("Status: ", 'white', 'bold');
-
-            if ($issue->status)
-                $this->cliEcho($issue->status->name);
-            else
-                $this->cliEcho('-');
-
-            $this->cliEcho("\n");
-            
             foreach ($issue->visible_fields as $field => $details)
             {
+                if ($field == 'status') continue;
                 $name = ucfirst(str_replace('_', ' ', $field));                
                 $this->cliEcho("{$name}: ", 'white', 'bold');
-                if ($issue->$field)
+                if (isset($issue->$field))
                 {
                     if ($field == 'estimated_time' || $field == 'spent_time')
                     {
@@ -143,7 +147,7 @@
                         
                         $this->cliEcho("\n");
                         $this->cliEcho('Posted: ', 'white', 'bold');
-                        $this->cliEcho(tbg_formatTime($comment->created_at, 21) . ' (' . $comment->created_at . ')');
+                        $this->cliEcho(tbg_formatTime($comment->created_at, 21, true) . ' (' . $comment->created_at . ')');
                         $this->cliEcho("\n");
                         $this->cliEcho('Comment: ', 'white', 'bold');
                         $this->cliEcho($comment->content);

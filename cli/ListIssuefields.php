@@ -18,14 +18,14 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class ListIssuefields extends \thebuggenie\core\framework\cli\RemoteCommand
+    class ListIssuefields extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'list_issuefields';
             $this->_description = "Query a remote server for a list of available issue fields per types";
-            $this->addRequiredArgument('project_key', 'The project to show available issue fields for');
+            $this->addRequiredArgument('project_id', 'The project id to show available issue fields for');
             $this->addRequiredArgument('issuetype', 'An issue type to show available issue fields for');
             parent::_setup();
         }
@@ -33,13 +33,13 @@
         public function do_execute()
         {
             $issuetype = $this->getProvidedArgument('issuetype', null);
-            $project_key = $this->getProvidedArgument('project_key', null);
+            $project_id = $this->getProvidedArgument('project_id', null);
 
             $this->cliEcho('Querying ');
             $this->cliEcho($this->_getCurrentRemoteServer(), 'white', 'bold');
-            $this->cliEcho(" for issuefields valid for issue types {$issuetype} for project {$project_key}\n\n");
+            $this->cliEcho(" for issuefields valid for issue types {$issuetype} for project {$project_id}\n\n");
 
-            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_issuefields', array('issuetype' => $issuetype, 'project_key' => $project_key, 'format' => 'json')));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_issuefields', array('issuetype' => $issuetype, 'project_id' => $project_id, 'format' => 'json')));
 
             if (!empty($response))
             {

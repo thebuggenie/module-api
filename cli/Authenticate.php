@@ -18,7 +18,7 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class Authenticate extends \thebuggenie\core\framework\cli\RemoteCommand
+    class Authenticate extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
@@ -64,12 +64,12 @@
             $this->cliEcho("\n");
             $this->cliEcho("Enter the application-specific password: ", 'white', 'bold');
             $password = $this->_getCliInput();
-            $response = $this->getRemoteResponse($this->getRemoteURL('api_authenticate', array('username' => $username)), array('password' => $password));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_authenticate'), array('username' => $username, 'password' => $password));
             if (!is_object($response))
             {
                 throw new \Exception('An error occured when receiving authentication response from the server');
             }
-            file_put_contents($path . '.remote_token', sha1($response->token));
+            file_put_contents($path . '.remote_token', $response->token);
             $this->cliEcho("Authentication successful!\n", 'white', 'bold');
         }
 

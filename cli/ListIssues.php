@@ -18,14 +18,14 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class ListIssues extends \thebuggenie\core\framework\cli\RemoteCommand
+    class ListIssues extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'list_issues';
             $this->_description = "Query a remote server for a list of available issues for a project";
-            $this->addRequiredArgument("project_key", "The project key for the project you wish to list issues for (see api_list_project)");
+            $this->addRequiredArgument('project_id', 'The project id to show available issue fields for');
             $this->addOptionalArgument("state", "Filter show only [open/closed/all] issues");
             $this->addOptionalArgument("issuetype", "Filter show only issues of type [<issue type>] (see api_list_issuetypes)");
             $this->addOptionalArgument("assigned_to", "Filter show only issues assigned to [<username>/me/none/all]");
@@ -57,15 +57,20 @@
             $this->cliEcho("\n");
             $options["assigned"] = $this->getProvidedArgument("state", "all");
 
-            $options['project_key'] = $this->getProvidedArgument('project_key');
+            $project_id = $this->getProvidedArgument('project_id');
+            $options['project_id'] = $project_id;
 
-            $response = $this->getRemoteResponse($this->getRemoteURL('project_list_issues', $options));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_projects_issues_list', $options));
 
             $this->cliEcho("\n");
             if (!empty($response) && $response->count > 0)
             {
                 \thebuggenie\core\framework\Context::loadLibrary('common');
-                $this->cliEcho("The following {$response->count} issues were found:\n", 'white', 'bold');
+                if ($response->count > 50) {
+                    $this->cliEcho("Showing max 50 of {$response->count} found issue(s):\n", 'white', 'bold');
+                } else {
+                    $this->cliEcho("The following {$response->count} issues were found:\n", 'white', 'bold');
+                }
 
                 foreach ($response->issues as $issue)
                 {
@@ -74,19 +79,22 @@
                     {
                         $this->cliEcho(($issue->state == \thebuggenie\core\entities\Issue::STATE_OPEN) ? "[open] " : "[closed] ");
                     }
+                    if ($this->getProvidedArgument('detailed', 'no') != 'yes') {
+                        $this->cliEcho('[' . trim(tbg_formatTime($issue->last_updated, 21, true)) . '] ', 'cyan');
+                    }
                     $this->cliEcho($issue->issue_no, 'green', 'bold');
                     $this->cliEcho(" - ");
                     $this->cliEcho(html_entity_decode($issue->title), 'white', 'bold');
                     $this->cliEcho("\n");
                     if ($this->getProvidedArgument('detailed', 'no') == 'yes')
                     {
+                        $this->cliEcho("Updated: ", 'blue', 'bold');
+                        $this->cliEcho(tbg_formatTime($issue->last_updated, 21, true));
+                        $this->cliEcho("\n");
                         $this->cliEcho("Posted: ", 'blue', 'bold');
-                        $this->cliEcho(tbg_formatTime($issue->created_at, 21));
+                        $this->cliEcho(tbg_formatTime($issue->created_at, 21, true));
                         $this->cliEcho(" by ");
                         $this->cliEcho($issue->posted_by, 'cyan');
-                        $this->cliEcho("\n");
-                        $this->cliEcho("Updated: ", 'blue', 'bold');
-                        $this->cliEcho(tbg_formatTime($issue->last_updated, 21));
                         $this->cliEcho("\n");
                         $this->cliEcho("Assigned to: ", 'blue', 'bold');
                         $this->cliEcho($issue->assigned_to, 'yellow', 'bold');
@@ -99,25 +107,25 @@
                 $this->cliEcho("\n");
                 $this->cliEcho("If you are going to update or query any of these issues, use the \n");
                 $this->cliEcho("issue number shown in front of the issue (do not include the \n");
-                $this->cliEcho("issue type), ex:\n");
+                $this->cliEcho("issue number hash), ex:\n");
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" api:update_issue projectname ");
+                $this->cliEcho(" api:update_issue {$project_id} ");
                 $this->cliEcho("300\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" api:show_issue projectname ");
+                $this->cliEcho(" api:show_issue {$project_id} ");
                 $this->cliEcho("300\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" api:list_transitions projectname ");
+                $this->cliEcho(" api:list_transitions {$project_id} ");
                 $this->cliEcho("300\n", 'white', 'bold');
                 $this->cliEcho("\nor\n");
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" api:update_issue projectname ");
+                $this->cliEcho(" api:update_issue {$project_id} ");
                 $this->cliEcho("PREFIX-12\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" api:show_issue projectname ");
+                $this->cliEcho(" api:show_issue {$project_id} ");
                 $this->cliEcho("PREFIX-12\n", 'white', 'bold');
                 $this->cliEcho("./tbg_cli", 'green');
-                $this->cliEcho(" api:list_transitions projectname ");
+                $this->cliEcho(" api:list_transitions {$project_id} ");
                 $this->cliEcho("PREFIX-12\n", 'white', 'bold');
                 $this->cliEcho("\n");
                 $this->cliEcho("\n");

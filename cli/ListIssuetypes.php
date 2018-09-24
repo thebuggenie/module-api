@@ -18,13 +18,14 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class ListIssuetypes extends \thebuggenie\core\framework\cli\RemoteCommand
+    class ListIssuetypes extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'list_issuetypes';
-            $this->_description = "Query a remote server for a list of available issue types";
+            $this->_description = "Query a remote server for a list of available issue types for a specific project";
+            $this->addRequiredArgument('project_id', 'The project id to show available issue fields for');
             parent::_setup();
         }
 
@@ -34,7 +35,7 @@
             $this->cliEcho($this->_getCurrentRemoteServer(), 'white', 'bold');
             $this->cliEcho(" for list of issuetypes ...\n\n");
 
-            $response = $this->getRemoteResponse($this->getRemoteURL('api_list_issuetypes', array('format' => 'json')));
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_projects_issuetypes_list'));
 
             if (!empty($response))
             {

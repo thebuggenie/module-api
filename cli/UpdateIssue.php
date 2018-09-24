@@ -18,14 +18,14 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class UpdateIssue extends \thebuggenie\core\framework\cli\RemoteCommand
+    class UpdateIssue extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'update_issue';
             $this->_description = "Update an issue on a remote server";
-            $this->addRequiredArgument('project_key', 'The project key for the project you want to update an issue for');
+            $this->addRequiredArgument('project_id', 'The project id for the project containing the issue you want to see transitions for');
             $this->addRequiredArgument('issue_number', 'The issue number for the issue you want to update');
             $this->addOptionalArgument('workflow_transition', 'The workflow transition to trigger (if any)');
             $this->addOptionalArgument('m', 'A comment to save with the changes');
@@ -35,7 +35,7 @@
         public function do_execute()
         {
             $this->cliEcho('Updating ');
-            $this->cliEcho($this->getProvidedArgument('project_key'), 'green');
+            $this->cliEcho($this->getProvidedArgument('project_id'), 'green');
             $this->cliEcho(' issue ');
             $print_issue_number = $this->getProvidedArgument('issue_number');
 
@@ -65,10 +65,10 @@
                 throw new \Exception("Please enter a valid message with your changes");
             }
 
-            $url_options = array('project_key' => $this->project_key, 'issue_no' => $this->issue_number);
+            $url_options = array('project_id' => $this->project_id, 'issue_no' => $this->issue_number);
             $post_data = $this->getNamedArguments();
             
-            foreach (array('server', 'username', 'project_key', 'issue_number', 'm') as $key)
+            foreach (array('server', 'username', 'project_id', 'issue_number', 'm') as $key)
             {
                 if (array_key_exists($key, $post_data)) unset($post_data[$key]);
             }
@@ -98,7 +98,7 @@
 
             if (count($fields) || array_key_exists('workflow_transition', $url_options))
             {
-                $response = $this->getRemoteResponse($this->getRemoteURL('project_update_issuedetails', $url_options), $post_data);
+                $response = $this->getRemoteResponse($this->getRemoteURL('api_issue_update', $url_options), $post_data);
 
                 if (!is_object($response))
                     throw new \Exception('Could not parse the return value from the server. Please re-check the command run.');

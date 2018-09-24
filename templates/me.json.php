@@ -1,3 +1,5 @@
 <?php
 
-    echo json_encode($users[0]);
+    /** @var \thebuggenie\core\entities\User $user */
+
+    echo json_encode($user->toJSON());

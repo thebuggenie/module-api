@@ -18,15 +18,16 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class ListFieldvalues extends \thebuggenie\core\framework\cli\RemoteCommand
+    class ListFieldvalues extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'list_fieldvalues';
             $this->_description = "Query a remote server for a list of available field values";
+            $this->addRequiredArgument('issuetype_key', 'The key for the issue type this issue field is linked to');
             $this->addRequiredArgument('field_key', 'The key for an issue field to show available values for');
-            $this->addOptionalArgument('project_key', "The key for a project to retrieve values for in case of project specific values (e.g. milestone)");
+            $this->addRequiredArgument('project_id', 'The project id for the project containing the issue you want to see transitions for');
             parent::_setup();
         }
 
@@ -38,11 +39,7 @@
             $this->cliEcho($this->field_key, 'yellow');
             $this->cliEcho("\n\n");
 
-            $options = array('field_key' => $this->field_key, 'format' => 'json');
-            if ($this->hasProvidedArgument('project_key'))
-            {
-                $options['project_key'] = $this->getProvidedArgument('project_key');
-            }
+            $options = array('project_id' => $this->project_id, 'issuetype' => $this->issuetype_key, 'field_key' => $this->field_key);
             $response = $this->getRemoteResponse($this->getRemoteURL('api_list_fieldvalues', $options));
 
             if (!empty($response))

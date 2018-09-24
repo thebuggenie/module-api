@@ -18,14 +18,14 @@
      * @package thebuggenie
      * @subpackage core
      */
-    class ListWorkflowTransitions extends \thebuggenie\core\framework\cli\RemoteCommand
+    class ListWorkflowTransitions extends \thebuggenie\modules\api\RemoteCommand
     {
 
         protected function _setup()
         {
             $this->_command_name = 'list_transitions';
             $this->_description = "Show available workflow transitions for an issue";
-            $this->addRequiredArgument('project_key', 'The project key for the project containing the issue you want to see transitions for');
+            $this->addRequiredArgument('project_id', 'The project id for the project containing the issue you want to see transitions for');
             $this->addRequiredArgument('issue_number', 'The issue number of the issue to show transitions for');
             $this->addOptionalArgument('transition', 'The name of a transition to show more details about');
             parent::_setup();
@@ -58,8 +58,8 @@
                 $this->cliEcho(" requires you to pass parameters when applied to an issue\n");
             }
 
-            $url_options = array('project_key' => $this->project_key, 'issue_no' => $this->issue_number, 'format' => 'json');
-            $response = $this->getRemoteResponse($this->getRemoteURL('project_list_workflowtransitions', $url_options));
+            $url_options = array('project_id' => $this->project_id, 'issue_no' => $this->issue_number);
+            $response = $this->getRemoteResponse($this->getRemoteURL('api_issue_list_transitions', $url_options));
             $this->cliEcho("\n");
 
             if (!$transition)

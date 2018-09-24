@@ -1,3 +1,10 @@
 <?php
 
-    echo json_encode(array('count' => count($issuetypes), 'issuetypes' => $issuetypes));
+    /** @var \thebuggenie\core\entities\Issuetype[] $issuetypes */
+
+    $json = [];
+    foreach ($issuetypes as $issuetype) {
+        $json[$issuetype->getID()] = $issuetype->toJSON();
+    }
+
+    echo json_encode($json);
